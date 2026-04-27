@@ -1,1 +1,2 @@
 # Mango-GS
+The code will release soon!
