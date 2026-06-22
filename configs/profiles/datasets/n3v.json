@@ -1,0 +1,24 @@
+{
+  "inherits": "global",
+  "description": "N3V release profile: strict held-out camera evaluation with scaled intrinsics.",
+  "params": {
+    "T": 4,
+    "K": 5,
+    "node_num": 4096,
+    "load2gpu_on_the_fly": true,
+    "n3v_protocol": "full_heldout",
+    "n3v_num_images": 0,
+    "n3v_intrinsics_mode": "scaled",
+    "n3v_camera_id_mode": "position",
+    "opacity_reset_interval": 300000,
+    "densify_from_iter": 3000,
+    "densification_interval": 100,
+    "densify_until_iter": 18000,
+    "densify_grad_threshold": 0.0001,
+    "node_densify_from_iter": 10000,
+    "node_densification_interval": 2500,
+    "node_densify_until_iter": 18000,
+    "node_max_num_ratio_during_init": 16,
+    "collapse_guard_min_best_psnr": 25.0
+  }
+}

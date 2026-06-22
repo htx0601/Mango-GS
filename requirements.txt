@@ -1,0 +1,16 @@
+numpy
+opencv-python
+Pillow
+PyYAML
+scipy
+tensorboard
+tqdm
+imageio
+imageio-ffmpeg
+plyfile
+piq
+lpips
+pytorch-msssim
+matplotlib
+scikit-image
+git+https://github.com/facebookresearch/pytorch3d.git

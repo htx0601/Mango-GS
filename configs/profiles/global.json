@@ -1,0 +1,29 @@
+{
+  "description": "Shared Mango-GS release defaults. Applied before dataset and scene profiles.",
+  "params": {
+    "deform_type": "mango_node",
+    "resolution": 2,
+    "W": 800,
+    "H": 800,
+    "white_background": true,
+    "iterations": 24000,
+    "test_iterations": [1, 5000, 9000, 13000, 17000, 19000, 21000, 23000, 24000],
+    "save_iterations": [24000],
+    "keep_recent_checkpoints": 1,
+    "keep_checkpoint_iterations": [24000],
+    "enable_topk": true,
+    "disable_topk_loss": false,
+    "loss_topk_ratio": 0.6,
+    "mask_probability": 0.15,
+    "lambda_depth": 0.0,
+    "with_dynamic_edge_loss": false,
+    "lambda_dynamic_edge": 0.0,
+    "lambda_dynamic_lap": 0.0,
+    "with_motion_diff_loss": false,
+    "lambda_cross_view_anchor": 0.0,
+    "cross_view_group_prob": 0.0,
+    "cross_view_anchor_prob": 0.0,
+    "deform_lr_scale": 1.0,
+    "collapse_guard_psnr_drop": 2.0
+  }
+}

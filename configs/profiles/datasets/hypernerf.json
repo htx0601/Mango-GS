@@ -1,0 +1,19 @@
+{
+  "inherits": "global",
+  "description": "HyperNeRF release profile.",
+  "params": {
+    "T": 6,
+    "K": 3,
+    "node_num": 2048,
+    "densify_from_iter": 3000,
+    "densification_interval": 100,
+    "densify_until_iter": 10000,
+    "densify_grad_threshold": 0.00012,
+    "node_densify_from_iter": 10000,
+    "node_densification_interval": 2500,
+    "node_densify_until_iter": 10000,
+    "node_max_num_ratio_during_init": 16,
+    "opacity_reset_interval": 3000,
+    "collapse_guard_min_best_psnr": 20.0
+  }
+}

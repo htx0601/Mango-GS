@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+outputs/
+queue_logs/
+runs/
+wandb/
+*.log
+
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.ply
+*.pt
+*.pth
