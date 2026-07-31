@@ -12,7 +12,7 @@
 import os
 import random
 import json
-from utils.system_utils import searchForMaxIteration
+from utils.system_utils import resolvePointCloudPath, searchForMaxIteration
 from scene.dataset_readers import sceneLoadTypeCallbacks
 from scene.gaussian_model import GaussianModel
 from scene.deform_model import DeformModel
@@ -32,7 +32,9 @@ class Scene:
         self.gaussians = gaussians
 
         if load_iteration:
-            if load_iteration == -1:
+            if os.path.isfile(os.path.join(self.model_path, "point_cloud.ply")):
+                self.loaded_iter = "release"
+            elif load_iteration == -1:
                 self.loaded_iter = searchForMaxIteration(os.path.join(self.model_path, "point_cloud"))
             else:
                 self.loaded_iter = load_iteration
@@ -108,10 +110,7 @@ class Scene:
             self.test_cameras[resolution_scale] = cameraList_from_camInfos(scene_info.test_cameras, resolution_scale, args)
 
         if self.loaded_iter:
-            self.gaussians.load_ply(os.path.join(self.model_path,
-                                                 "point_cloud",
-                                                 "iteration_" + str(self.loaded_iter),
-                                                 "point_cloud.ply"),
+            self.gaussians.load_ply(resolvePointCloudPath(self.model_path, self.loaded_iter),
                                     og_number_points=len(scene_info.point_cloud.points))
         else:
             self.gaussians.create_from_pcd(scene_info.point_cloud, self.cameras_extent)

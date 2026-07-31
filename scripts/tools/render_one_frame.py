@@ -15,13 +15,14 @@ from arguments.__init__video import ModelParams, OptimizationParams, PipelinePar
 from gaussian_renderer import GaussianModel, render_batch
 from scene import DeformModel, Scene
 from utils.general_utils import safe_state
+from utils.system_utils import resolveCheckpointIteration
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source_path", required=True)
     parser.add_argument("--model_path", required=True)
-    parser.add_argument("--iteration", type=int, required=True)
+    parser.add_argument("--iteration", type=int, default=-1)
     parser.add_argument("--out_path", required=True)
     parser.add_argument("--deform_type", default="mango_node")
     parser.add_argument("--resolution", type=int, default=2)
@@ -68,6 +69,7 @@ def main() -> int:
     opt = op.extract(train_args)
     pipe = pp.extract(train_args)
     del opt
+    args.iteration = resolveCheckpointIteration(dataset.model_path, args.iteration)
 
     deform = DeformModel(
         K=dataset.K,
@@ -88,7 +90,7 @@ def main() -> int:
         enable_learned_metric=dataset.enable_learned_metric,
     )
     if not deform.load_weights(dataset.model_path, iteration=args.iteration):
-        raise RuntimeError(f"Could not load deform weights: {dataset.model_path} iteration {args.iteration}")
+        raise RuntimeError(f"Could not load deform weights: {dataset.model_path}")
 
     gs_fea_dim = deform.deform.node_num if dataset.skinning and "node" in deform.name else dataset.hyper_dim
     gaussians = GaussianModel(dataset.sh_degree, fea_dim=gs_fea_dim, with_motion_mask=dataset.gs_with_motion_mask)

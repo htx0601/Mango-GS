@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mango-GS: multi-frame node-guided 4D Gaussian splatting for temporally consistent dynamic scene reconstruction.">
+  <meta name="theme-color" content="#f7f7f4">
+  <title>Mango-GS | ICLR 2026</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#top" aria-label="Mango-GS home">Mango-GS</a>
+      <nav class="site-nav" aria-label="Page navigation">
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#speed">Speed</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="shell hero-copy">
+        <p class="venue">ICLR 2026</p>
+        <h1><span>Mango-GS:</span> Enhancing Spatio-Temporal Consistency in Dynamic Scenes Reconstruction using Multi-Frame Node-Guided 4D Gaussian Splatting</h1>
+        <p class="authors">
+          <span>Tingxuan Huang<sup>1</sup></span>
+          <span>Haowei Zhu<sup>1</sup></span>
+          <span>Jun-hai Yong<sup>1</sup></span>
+          <span>Hao Pan<sup>1</sup></span>
+          <span>Bin Wang<sup>1,2</sup></span>
+        </p>
+        <p class="affiliations"><sup>1</sup>School of Software, Tsinghua University &nbsp; <sup>2</sup>BNRist</p>
+        <div class="hero-links" aria-label="Project resources">
+          <a href="https://arxiv.org/abs/2603.11543" target="_blank" rel="noreferrer"><img class="link-icon" src="assets/icons/arxiv.svg" alt="">arXiv</a>
+          <a href="https://github.com/htx0601/Mango-GS" target="_blank" rel="noreferrer"><img class="link-icon" src="assets/icons/github.svg" alt="">GitHub</a>
+          <a href="https://huggingface.co/htx0601/Mango-GS" target="_blank" rel="noreferrer"><img class="link-icon" src="assets/icons/huggingface.svg" alt="">Weights</a>
+        </div>
+      </div>
+
+      <div class="shell-wide teaser-grid" aria-label="Selected Mango-GS reconstructions">
+        <figure class="teaser teaser-landscape">
+          <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Cook Spinach novel-view rendering" poster="assets/images/posters/n3v/cook-spinach.png">
+            <source src="assets/videos/n3v/cook-spinach.mp4" type="video/mp4">
+          </video>
+          <figcaption><span>Cook Spinach</span><small>N3V</small></figcaption>
+        </figure>
+        <figure class="teaser teaser-landscape">
+          <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Sear Steak novel-view rendering" poster="assets/images/posters/n3v/sear-steak.png">
+            <source src="assets/videos/n3v/sear-steak.mp4" type="video/mp4">
+          </video>
+          <figcaption><span>Sear Steak</span><small>N3V</small></figcaption>
+        </figure>
+        <figure class="teaser teaser-portrait">
+          <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Peel Banana novel-view rendering" poster="assets/images/posters/hypernerf/peel-banana.png">
+            <source src="assets/videos/hypernerf/peel-banana.mp4" type="video/mp4">
+          </video>
+          <figcaption><span>Peel Banana</span><small>HyperNeRF</small></figcaption>
+        </figure>
+        <figure class="teaser teaser-portrait">
+          <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Chicken novel-view rendering" poster="assets/images/posters/hypernerf/chicken.png">
+            <source src="assets/videos/hypernerf/chicken.mp4" type="video/mp4">
+          </video>
+          <figcaption><span>Chicken</span><small>HyperNeRF</small></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section abstract-section" id="abstract">
+      <div class="shell text-column">
+        <p class="section-kicker">Overview</p>
+        <h2>Abstract</h2>
+        <p>Reconstructing dynamic 3D scenes with photorealistic detail and strong temporal coherence remains a significant challenge. Existing Gaussian splatting approaches for dynamic scene modeling often rely on per-frame optimization, which can overfit to instantaneous states instead of capturing underlying motion dynamics. To address this, we present Mango-GS, a multi-frame, node-guided framework for high-fidelity 4D reconstruction.</p>
+        <p>Mango-GS leverages a temporal Transformer to model motion dependencies within a short window of frames, producing temporally consistent deformations. Temporal modeling is confined to a sparse set of control nodes for efficiency. Each node uses a decoupled canonical position and latent code, providing stable semantic anchors for motion propagation and preventing correspondence drift under large motion.</p>
+      </div>
+    </section>
+
+    <section class="section method-section" id="method">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Approach</p>
+            <h2>Multi-frame node-guided dynamics</h2>
+          </div>
+          <p>Sparse control nodes model motion over short temporal windows, then propagate temporally coherent deformation to the dense Gaussian representation.</p>
+        </div>
+        <figure class="method-figure">
+          <img src="assets/images/method.png" alt="Mango-GS pipeline showing multi-frame sampling, sparse control nodes, temporal attention, and Gaussian deformation." width="1525" height="585">
+          <figcaption>Mango-GS combines decoupled control nodes, temporal attention, input masking, and multi-frame supervision in an end-to-end reconstruction pipeline.</figcaption>
+        </figure>
+        <div class="method-points">
+          <article>
+            <span class="point-index">01</span>
+            <h3>Decoupled control nodes</h3>
+            <p>Canonical positions provide stable spatial anchors while latent codes carry motion features without coupling identity to instantaneous deformation.</p>
+          </article>
+          <article>
+            <span class="point-index">02</span>
+            <h3>Temporal attention</h3>
+            <p>A compact Transformer learns dependencies across neighboring frames on sparse nodes instead of operating over millions of Gaussians.</p>
+          </article>
+          <article>
+            <span class="point-index">03</span>
+            <h3>Robust multi-frame training</h3>
+            <p>Grouped frame sampling, input masking, and multi-frame objectives improve temporal consistency under fast motion and partial observation.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section results-section" id="results">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Multi-view video</p>
+            <h2>N3V results</h2>
+          </div>
+          <p>Novel-view renderings for all six scenes. Videos are encoded at 2x dataset playback speed.</p>
+        </div>
+        <div class="video-grid video-grid-n3v">
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Coffee Martini novel-view rendering" poster="assets/images/posters/n3v/coffee-martini.png"><source src="assets/videos/n3v/coffee-martini.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Coffee Martini</h3><p>193.10 FPS</p></div>
+          </article>
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Flame Salmon novel-view rendering" poster="assets/images/posters/n3v/flame-salmon.png"><source src="assets/videos/n3v/flame-salmon.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Flame Salmon</h3><p>154.62 FPS</p></div>
+          </article>
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Cook Spinach novel-view rendering" poster="assets/images/posters/n3v/cook-spinach.png"><source src="assets/videos/n3v/cook-spinach.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Cook Spinach</h3><p>64.18 FPS</p></div>
+          </article>
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Cut Roasted Beef novel-view rendering" poster="assets/images/posters/n3v/cut-roasted-beef.png"><source src="assets/videos/n3v/cut-roasted-beef.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Cut Roasted Beef</h3><p>70.09 FPS</p></div>
+          </article>
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Flame Steak novel-view rendering" poster="assets/images/posters/n3v/flame-steak.png"><source src="assets/videos/n3v/flame-steak.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Flame Steak</h3><p>72.79 FPS</p></div>
+          </article>
+          <article class="result-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Sear Steak novel-view rendering" poster="assets/images/posters/n3v/sear-steak.png"><source src="assets/videos/n3v/sear-steak.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Sear Steak</h3><p>61.15 FPS</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section results-section hyper-section">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Monocular video</p>
+            <h2>HyperNeRF results</h2>
+          </div>
+          <p>Novel-view renderings across topology-changing and articulated motion sequences, shown at the fixed HyperNeRF review speed.</p>
+        </div>
+        <div class="video-grid video-grid-hyper">
+          <article class="result-card portrait-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Peel Banana novel-view rendering" poster="assets/images/posters/hypernerf/peel-banana.png"><source src="assets/videos/hypernerf/peel-banana.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Peel Banana</h3><p>174.35 FPS</p></div>
+          </article>
+          <article class="result-card portrait-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Chicken novel-view rendering" poster="assets/images/posters/hypernerf/chicken.png"><source src="assets/videos/hypernerf/chicken.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Chicken</h3><p>160.84 FPS</p></div>
+          </article>
+          <article class="result-card portrait-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="3D Printer novel-view rendering" poster="assets/images/posters/hypernerf/3d-printer.png"><source src="assets/videos/hypernerf/3d-printer.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>3D Printer</h3><p>138.89 FPS</p></div>
+          </article>
+          <article class="result-card portrait-card">
+            <video muted loop playsinline controls preload="metadata" data-autoplay aria-label="Broom novel-view rendering" poster="assets/images/posters/hypernerf/broom2.png"><source src="assets/videos/hypernerf/broom2.mp4" type="video/mp4"></video>
+            <div class="result-meta"><h3>Broom</h3><p>360.39 FPS</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section speed-section" id="speed">
+      <div class="shell speed-layout">
+        <div>
+          <p class="section-kicker">Real-time rendering</p>
+          <h2>Fast multi-frame inference</h2>
+          <p class="speed-note">Mean deform-and-render speed recorded for the ten displayed scene/view outputs on NVIDIA RTX 3090 GPUs.</p>
+          <div class="speed-stats" aria-label="Inference speed summary">
+            <span>N3V mean <strong>102.66</strong></span>
+            <span>HyperNeRF mean <strong>208.62</strong></span>
+            <span>Median <strong>146.76</strong></span>
+          </div>
+        </div>
+        <p class="speed-value"><strong>145.0</strong><span>FPS</span></p>
+      </div>
+    </section>
+
+    <section class="section citation-section" id="citation">
+      <div class="shell citation-layout">
+        <div>
+          <p class="section-kicker">Reference</p>
+          <h2>Citation</h2>
+          <p>Please cite Mango-GS when using the code, models, or results.</p>
+          <button class="copy-button" type="button" data-copy-citation>Copy BibTeX</button>
+          <p class="copy-status" role="status" aria-live="polite"></p>
+        </div>
+        <pre id="bibtex"><code>@inproceedings{huang2026mangogs,
+  title     = {Mango-GS: Enhancing Spatio-Temporal Consistency in Dynamic Scenes Reconstruction using Multi-Frame Node-Guided 4D Gaussian Splatting},
+  author    = {Huang, Tingxuan and Zhu, Haowei and Yong, Jun-hai and Pan, Hao and Wang, Bin},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <p>Mango-GS · ICLR 2026</p>
+      <a href="https://github.com/htx0601/Mango-GS" target="_blank" rel="noreferrer"><img class="footer-icon" src="assets/icons/github.svg" alt="">GitHub · htx0601/Mango-GS</a>
+      <a href="https://huggingface.co/htx0601/Mango-GS" target="_blank" rel="noreferrer"><img class="footer-icon" src="assets/icons/huggingface.svg" alt="">Weights · Hugging Face</a>
+    </div>
+  </footer>
+</body>
+</html>

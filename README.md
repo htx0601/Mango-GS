@@ -3,7 +3,7 @@
 Official release code for **Mango-GS: Enhancing Spatio-Temporal Consistency in Dynamic Scenes Reconstruction using Multi-Frame Node-Guided 4D Gaussian Splatting**.
 
 - Paper: [Mango-GS: Enhancing Spatio-Temporal Consistency in Dynamic Scenes Reconstruction using Multi-Frame Node-Guided 4D Gaussian Splatting](https://arxiv.org/abs/2603.11543)
-- Project page: TBD
+- Project page: [https://htx0601.github.io/Mango-GS/](https://htx0601.github.io/Mango-GS/)
 - Code: [https://github.com/htx0601/Mango-GS](https://github.com/htx0601/Mango-GS)
 
 This repository contains the training, rendering, metric, profile, and CUDA extension code used by the public release. Pretrained weights and datasets are distributed separately.
@@ -18,6 +18,7 @@ This repository contains the training, rendering, metric, profile, and CUDA exte
 |-- render.py                        # Test rendering and video export
 |-- metrics.py                       # PSNR / SSIM / LPIPS evaluation
 |-- configs/profiles/                # Global, dataset, and scene profiles
+|-- docs/index.html                  # GitHub Pages project page
 |-- docs/release_profiles.md         # Profile table and parameter summary
 |-- scripts/
 |   |-- train_scene.sh               # Train one scene on one GPU
@@ -174,7 +175,6 @@ Render test images and a video from a trained or downloaded checkpoint:
 scripts/render_scene.sh n3v cook_spinach \
   /data/datasets/n3v/cook_spinach \
   outputs/n3v_cook_spinach \
-  24000 \
   0 \
   20
 ```
@@ -182,13 +182,13 @@ scripts/render_scene.sh n3v cook_spinach \
 The last argument is video FPS. Rendered outputs are saved under:
 
 ```text
-outputs/n3v_cook_spinach_mango_node/test/video_24000/
+outputs/n3v_cook_spinach_mango_node/test/video_<checkpoint>/
 ```
 
 Compute image and temporal metrics:
 
 ```bash
-scripts/eval_metrics.sh outputs/n3v_cook_spinach 24000 0
+scripts/eval_metrics.sh outputs/n3v_cook_spinach 0
 ```
 
 Render one preview frame:
@@ -197,7 +197,6 @@ Render one preview frame:
 scripts/render_one_frame.sh n3v cook_spinach \
   /data/datasets/n3v/cook_spinach \
   outputs/n3v_cook_spinach \
-  24000 \
   0 \
   previews/cook_spinach.png
 ```
@@ -208,30 +207,31 @@ scripts/render_one_frame.sh n3v cook_spinach \
 scripts/render_scene.sh hypernerf vrig-peel-banana \
   /data/datasets/hypernerf/vrig/vrig-peel-banana \
   outputs/hypernerf_vrig-peel-banana \
-  24000 \
   0 \
   10
 ```
 
 ```bash
-scripts/eval_metrics.sh outputs/hypernerf_vrig-peel-banana 24000 0
+scripts/eval_metrics.sh outputs/hypernerf_vrig-peel-banana 0
 ```
 
 ```bash
 scripts/render_one_frame.sh hypernerf vrig-peel-banana \
   /data/datasets/hypernerf/vrig/vrig-peel-banana \
   outputs/hypernerf_vrig-peel-banana \
-  24000 \
   0 \
   previews/vrig-peel-banana.png
 ```
 
 ## Pretrained Weights
 
-Download the released weights and extract them into `weights/`.
+Pretrained weights are hosted on
+[Hugging Face](https://huggingface.co/htx0601/Mango-GS). Download them directly
+into `weights/`:
 
-- Google Drive: TBD
-- Baidu Netdisk: TBD
+```bash
+hf download htx0601/Mango-GS --local-dir weights
+```
 
 Expected layout:
 
@@ -240,13 +240,13 @@ weights/
   n3v/
     cook_spinach_mango_node/
       cfg_args
-      point_cloud/iteration_<iter>/point_cloud.ply
-      deform/iteration_<iter>/deform.pth
+      point_cloud.ply
+      deform.pth
   hypernerf/
     vrig-peel-banana_mango_node/
       cfg_args
-      point_cloud/iteration_<iter>/point_cloud.ply
-      deform/iteration_<iter>/deform.pth
+      point_cloud.ply
+      deform.pth
 ```
 
 Commands may use the base path, for example `weights/n3v/cook_spinach`; the code resolves it to `weights/n3v/cook_spinach_mango_node`.

@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "deform_type": "mango_node",
+  "datasets": {
+    "n3v": {
+      "base": {"T": 4, "K": 5, "node_num": 4096, "resolution": 2},
+      "scenes": {
+        "coffee_martini": {"T": 4, "K": 3, "node_num": 2048, "resolution": 2},
+        "cook_spinach": {"T": 4, "K": 5, "node_num": 4096, "resolution": 2},
+        "cut_roasted_beef": {"T": 4, "K": 5, "node_num": 4096, "resolution": 2},
+        "flame_salmon_1": {"T": 4, "K": 3, "node_num": 2048, "resolution": 2},
+        "flame_steak": {"T": 4, "K": 5, "node_num": 4096, "resolution": 2},
+        "sear_steak": {"T": 4, "K": 5, "node_num": 4096, "resolution": 2}
+      }
+    },
+    "hypernerf": {
+      "base": {"T": 6, "K": 3, "node_num": 2048, "resolution": 2},
+      "scenes": {
+        "broom2": {"T": 6, "K": 3, "node_num": 2048, "resolution": 2},
+        "vrig-3dprinter": {"T": 6, "K": 3, "node_num": 2048, "resolution": 2},
+        "vrig-chicken": {"T": 6, "K": 3, "node_num": 2048, "resolution": 2},
+        "vrig-peel-banana": {"T": 8, "K": 3, "node_num": 4096, "resolution": 2}
+      }
+    }
+  }
+}

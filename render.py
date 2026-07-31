@@ -20,6 +20,7 @@ from scene.dataset_readers import readCamerasFromNpy, readNerfiesInfo, sceneLoad
 from utils.camera_utils import cameraList_from_camInfos
 from utils.general_utils import safe_state
 from utils.image_utils import alex_lpips, lpips, psnr, ssim as ssim_func
+from utils.system_utils import resolveCheckpointIteration, resolvePointCloudPath
 
 
 def load_test_cameras(dataset, args):
@@ -258,6 +259,7 @@ def main() -> int:
     safe_state(args.quiet)
     dataset = model.extract(args)
     pipe = pipeline.extract(args)
+    args.iteration = resolveCheckpointIteration(dataset.model_path, args.iteration)
 
     deform = DeformModel(
         K=dataset.K,
@@ -279,12 +281,11 @@ def main() -> int:
     )
 
     with torch.no_grad():
-        deform.load_weights(dataset.model_path, iteration=args.iteration)
+        if not deform.load_weights(dataset.model_path, iteration=args.iteration):
+            raise RuntimeError(f"Could not load deform weights from {dataset.model_path}")
         gs_fea_dim = deform.deform.node_num if dataset.skinning and "node" in deform.name else dataset.hyper_dim
         gaussians = GaussianModel(dataset.sh_degree, fea_dim=gs_fea_dim, with_motion_mask=dataset.gs_with_motion_mask)
-        gaussians.load_ply(
-            os.path.join(dataset.model_path, "point_cloud", f"iteration_{args.iteration}", "point_cloud.ply")
-        )
+        gaussians.load_ply(resolvePointCloudPath(dataset.model_path, args.iteration))
         views = load_test_cameras(dataset, args)
         background = torch.tensor([1, 1, 1] if dataset.white_background else [0, 0, 0], dtype=torch.float32, device="cuda")
         render_test_video(

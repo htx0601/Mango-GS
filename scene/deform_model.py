@@ -65,11 +65,15 @@ class DeformModel:
         torch.save(self.deform.state_dict(), os.path.join(out_weights_path, 'deform.pth'))
 
     def load_weights(self, model_path, iteration=-1):
-        if iteration == -1:
+        flat_weights_path = os.path.join(model_path, 'deform.pth')
+        if os.path.isfile(flat_weights_path):
+            weights_path = flat_weights_path
+        elif iteration == -1:
             loaded_iter = searchForMaxIteration(os.path.join(model_path, "deform"))
+            weights_path = os.path.join(model_path, "deform/iteration_{}/deform.pth".format(loaded_iter))
         else:
             loaded_iter = iteration
-        weights_path = os.path.join(model_path, "deform/iteration_{}/deform.pth".format(loaded_iter))
+            weights_path = os.path.join(model_path, "deform/iteration_{}/deform.pth".format(loaded_iter))
         if os.path.exists(weights_path):
             self.deform.load_state_dict(torch.load(weights_path))
             return True

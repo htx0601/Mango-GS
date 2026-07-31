@@ -30,3 +30,31 @@ def searchForMaxIteration(folder):
         return None
     saved_iters = [int(fname.split("_")[-1]) for fname in os.listdir(folder) if "_" in fname]
     return max(saved_iters) if saved_iters != [] else None
+
+
+def resolveCheckpointIteration(model_path, requested_iteration):
+    flat_point_cloud = os.path.join(model_path, "point_cloud.ply")
+    flat_deform = os.path.join(model_path, "deform.pth")
+    if os.path.isfile(flat_point_cloud) and os.path.isfile(flat_deform):
+        return "release"
+
+    if requested_iteration != -1:
+        return requested_iteration
+
+    point_iteration = searchForMaxIteration(os.path.join(model_path, "point_cloud"))
+    deform_iteration = searchForMaxIteration(os.path.join(model_path, "deform"))
+    if point_iteration is None or deform_iteration is None:
+        raise FileNotFoundError(f"No complete checkpoint found in {model_path}")
+    if point_iteration != deform_iteration:
+        raise RuntimeError(
+            f"Checkpoint mismatch in {model_path}: "
+            f"point_cloud={point_iteration}, deform={deform_iteration}"
+        )
+    return point_iteration
+
+
+def resolvePointCloudPath(model_path, checkpoint):
+    flat_path = os.path.join(model_path, "point_cloud.ply")
+    if os.path.isfile(flat_path):
+        return flat_path
+    return os.path.join(model_path, "point_cloud", f"iteration_{checkpoint}", "point_cloud.ply")

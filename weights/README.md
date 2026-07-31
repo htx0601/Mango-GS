@@ -1,24 +1,30 @@
 # Mango-GS Weights
 
-Download the released weights and extract them into this folder.
+Download the released files into this folder.
 
-- Google Drive: TBD
-- Baidu Netdisk: TBD
+- Hugging Face: https://huggingface.co/htx0601/Mango-GS
+
+The repository contains the ten inference checkpoints selected for the public
+release. Model parameters are recorded in `manifest.json`; the same hierarchy
+is implemented by `configs/profiles/`.
 
 Expected layout:
 
 ```text
 weights/
+  manifest.json
   n3v/
     cook_spinach_mango_node/
       cfg_args
-      point_cloud/iteration_<iter>/point_cloud.ply
-      deform/iteration_<iter>/...
+      point_cloud.ply
+      deform.pth
   hypernerf/
     vrig-peel-banana_mango_node/
       cfg_args
-      point_cloud/iteration_<iter>/point_cloud.ply
-      deform/iteration_<iter>/...
+      point_cloud.ply
+      deform.pth
 ```
 
-Mango-GS appends the deform suffix to model folders. Commands can be called with a base path such as `weights/n3v/cook_spinach`; it resolves to `weights/n3v/cook_spinach_mango_node`.
+Commands use the base path without the deform suffix. For example,
+`weights/n3v/cook_spinach` resolves to
+`weights/n3v/cook_spinach_mango_node`.
